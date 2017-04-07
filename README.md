@@ -28,4 +28,14 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \tikasoft\jalali\AutoloadExample::widget(); ?>```
+in main-local.php add jDate to components array :
+ 
+    'components' => [
+        'jDate' => [
+            'class' => 'tikasoft\jalali\jDate',
+        ],
+    ],
+	
+for use :	
+$t=time();
+echo  \yii::$app->jDate->dateTime("Y-m-d H:i:s",$t);```
