@@ -2,6 +2,10 @@
 
 namespace tikasoft\jalali;
 
+use Yii;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
+
 /* In the name of Allah = بسم اللّه الرّحمن الرّحیم */
 
 /**
@@ -13,21 +17,15 @@ namespace tikasoft\jalali;
  */
 /* 	F	 */
 
-class jDate extends \yii\base\Widget {
-
-    public function run() {
-        return "Hello!";
-    }
-
+class jDate extends Component {
     /* 	F	 */
 
-    function jdate($format, $timestamp = '', $none = '', $time_zone = 'Asia/Tehran', $tr_num = 'fa') {
+    function dateTime($format, $timestamp = '', $none = '', $time_zone = 'Asia/Tehran', $tr_num = 'fa') {
 
         $T_sec = 0; /* <= رفع خطاي زمان سرور ، با اعداد '+' و '-' بر حسب ثانيه */
 
-        if ($time_zone != 'local'){
+        if ($time_zone != 'local')
             date_default_timezone_set(($time_zone === '') ? 'Asia/Tehran' : $time_zone);
-        }
         $ts = $T_sec + (($timestamp === '') ? time() : $this->tr_num($timestamp));
         $date = explode('_', date('H_i_j_n_O_P_s_w_Y', $ts));
         list($j_y, $j_m, $j_d) = $this->gregorian_to_jalali($date[8], $date[3], $date[2]);
@@ -38,7 +36,7 @@ class jDate extends \yii\base\Widget {
         for ($i = 0; $i < $sl; $i++) {
             $sub = substr($format, $i, 1);
             if ($sub == '\\') {
-                $out .= substr($format,  ++$i, 1);
+                $out .= substr($format, ++$i, 1);
                 continue;
             }
             switch ($sub) {
@@ -106,11 +104,11 @@ class jDate extends \yii\base\Widget {
                     break;
 
                 case'k';
-                    $out .= $this->tr_num(100 - (int) ($doy / ($kab + 365) * 1000) / 10, $$this->tr_num);
+                    $out .= $this->tr_num(100 - (int) ($doy / ($kab + 365) * 1000) / 10, $tr_num);
                     break;
 
                 case'K':
-                    $out .= $this->tr_num((int) ($doy / ($kab + 365) * 1000) / 10, $$this->tr_num);
+                    $out .= $this->tr_num((int) ($doy / ($kab + 365) * 1000) / 10, $tr_num);
                     break;
 
                 case'l':
@@ -198,9 +196,8 @@ class jDate extends \yii\base\Widget {
 
                 case'W':
                     $avs = (($date[7] == 6) ? 0 : $date[7] + 1) - ($doy % 7);
-                    if ($avs < 0){
+                    if ($avs < 0)
                         $avs += 7;
-                    }
                     $num = (int) (($doy + $avs) / 7);
                     if ($avs < 4) {
                         $num++;
@@ -208,9 +205,8 @@ class jDate extends \yii\base\Widget {
                         $num = ($avs == 4 or $avs == ((((($j_y % 33) % 4) - 2) == ((int) (($j_y % 33) * 0.05))) ? 5 : 4)) ? 53 : 52;
                     }
                     $aks = $avs + $kab;
-                    if ($aks == 7){
+                    if ($aks == 7)
                         $aks = 0;
-                    }
                     $out .= (($kab + 363 - $doy) < $aks and $aks < 3) ? '01' : (($num < 10) ? '0' . $num : $num);
                     break;
 
@@ -229,17 +225,17 @@ class jDate extends \yii\base\Widget {
                 default:$out .= $sub;
             }
         }
-        return($$this->tr_num != 'en') ? $this->tr_num($out, 'fa', '.') : $out;
-        }
+        return($tr_num != 'en') ? $this->tr_num($out, 'fa', '.') : $out;
+    }
 
-        /* 	F	 */
-        function jstrftime($format, $timestamp = '', $none = '', $time_zone = 'Asia/Tehran', $tr_num = 'fa'){
+    /* 	F	 */
+
+    function jstrftime($format, $timestamp = '', $none = '', $time_zone = 'Asia/Tehran', $tr_num = 'fa') {
 
         $T_sec = 0; /* <= رفع خطاي زمان سرور ، با اعداد '+' و '-' بر حسب ثانيه */
 
-        if ($time_zone != 'local'){
+        if ($time_zone != 'local')
             date_default_timezone_set(($time_zone === '') ? 'Asia/Tehran' : $time_zone);
-        }
         $ts = $T_sec + (($timestamp === '') ? time() : $this->tr_num($timestamp));
         $date = explode('_', date('h_H_i_j_n_s_w_Y', $ts));
         list($j_y, $j_m, $j_d) = $this->gregorian_to_jalali($date[7], $date[4], $date[3]);
@@ -250,7 +246,7 @@ class jDate extends \yii\base\Widget {
         for ($i = 0; $i < $sl; $i++) {
             $sub = substr($format, $i, 1);
             if ($sub == '%') {
-                $sub = substr($format,  ++$i, 1);
+                $sub = substr($format, ++$i, 1);
             } else {
                 $out .= $sub;
                 continue;
@@ -289,21 +285,18 @@ class jDate extends \yii\base\Widget {
                 /* Week */
                 case'U':
                     $avs = (($date[6] < 5) ? $date[6] + 2 : $date[6] - 5) - ($doy % 7);
-                    if ($avs < 0){
+                    if ($avs < 0)
                         $avs += 7;
-                    }
                     $num = (int) (($doy + $avs) / 7) + 1;
-                    if ($avs > 3 or $avs == 1){
+                    if ($avs > 3 or $avs == 1)
                         $num--;
-                    }
                     $out .= ($num < 10) ? '0' . $num : $num;
                     break;
 
                 case'V':
                     $avs = (($date[6] == 6) ? 0 : $date[6] + 1) - ($doy % 7);
-                    if ($avs < 0){
+                    if ($avs < 0)
                         $avs += 7;
-                    }
                     $num = (int) (($doy + $avs) / 7);
                     if ($avs < 4) {
                         $num++;
@@ -311,21 +304,18 @@ class jDate extends \yii\base\Widget {
                         $num = ($avs == 4 or $avs == ((((($j_y % 33) % 4) - 2) == ((int) (($j_y % 33) * 0.05))) ? 5 : 4)) ? 53 : 52;
                     }
                     $aks = $avs + $kab;
-                    if ($aks == 7){
+                    if ($aks == 7)
                         $aks = 0;
-                    }
                     $out .= (($kab + 363 - $doy) < $aks and $aks < 3) ? '01' : (($num < 10) ? '0' . $num : $num);
                     break;
 
                 case'W':
                     $avs = (($date[6] == 6) ? 0 : $date[6] + 1) - ($doy % 7);
-                    if ($avs < 0){
+                    if ($avs < 0)
                         $avs += 7;
-                    }
                     $num = (int) (($doy + $avs) / 7) + 1;
-                    if ($avs > 3){
+                    if ($avs > 3)
                         $num--;
-                    }
                     $out .= ($num < 10) ? '0' . $num : $num;
                     break;
 
@@ -460,15 +450,14 @@ class jDate extends \yii\base\Widget {
                 default:$out .= $sub;
             }
         }
-        return($$this->tr_num != 'en') ? $this->tr_num($out, 'fa', '.') : $out;
+        return($tr_num != 'en') ? $this->tr_num($out, 'fa', '.') : $out;
     }
 
     /* 	F	 */
 
     function jmktime($h = '', $m = '', $s = '', $jm = '', $jd = '', $jy = '', $none = '', $timezone = 'Asia/Tehran') {
-        if ($timezone != 'local'){
+        if ($timezone != 'local')
             date_default_timezone_set($timezone);
-        }
         if ($h === '') {
             return time();
         } else {
@@ -482,7 +471,7 @@ class jDate extends \yii\base\Widget {
                     if ($jm === '') {
                         return mktime($h, $m, $s);
                     } else {
-                        $jdate = explode('_', jdate('Y_j', '', '', $timezone, 'en'));
+                        $jdate = explode('_', $this->dateTime('Y_j', '', '', $timezone, 'en'));
                         if ($jd === '') {
                             list($gy, $gm, $gd) = $this->jalali_to_gregorian($jdate[0], $jm, $jdate[1]);
                             return mktime($h, $m, $s, $gm);
@@ -505,7 +494,7 @@ class jDate extends \yii\base\Widget {
 
     function jgetdate($timestamp = '', $none = '', $timezone = 'Asia/Tehran', $tn = 'en') {
         $ts = ($timestamp === '') ? time() : $this->tr_num($timestamp);
-        $jdate = explode('_', jdate('F_G_i_j_l_n_s_w_Y_z', $ts, '', $timezone, $tn));
+        $jdate = explode('_', $this->dateTime('F_G_i_j_l_n_s_w_Y_z', $ts, '', $timezone, $tn));
         return array(
             'seconds' => $this->tr_num((int) $this->tr_num($jdate[6]), $tn),
             'minutes' => $this->tr_num((int) $this->tr_num($jdate[2]), $tn),
@@ -637,9 +626,8 @@ class jDate extends \yii\base\Widget {
         $jy += 4 * ((int) ($days / 1461));
         $days %= 1461;
         $jy += (int) (($days - 1) / 365);
-        if ($days > 365){
+        if ($days > 365)
             $days = ($days - 1) % 365;
-        }
         if ($days < 186) {
             $jm = 1 + (int) ($days / 31);
             $jd = 1 + ($days % 31);
@@ -666,21 +654,18 @@ class jDate extends \yii\base\Widget {
         if ($days > 36524) {
             $gy += 100 * ((int) ( --$days / 36524));
             $days %= 36524;
-            if ($days >= 365){
+            if ($days >= 365)
                 $days++;
-            }
         }
         $gy += 4 * ((int) (($days) / 1461));
         $days %= 1461;
         $gy += (int) (($days - 1) / 365);
-        if ($days > 365){
+        if ($days > 365)
             $days = ($days - 1) % 365;
-        }
         $gd = $days + 1;
         foreach (array(0, 31, ((($gy % 4 == 0) and ( $gy % 100 != 0)) or ( $gy % 400 == 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) as $gm => $v) {
-            if ($gd <= $v){
+            if ($gd <= $v)
                 break;
-            }
             $gd -= $v;
         }
         return($mod === '') ? array($gy, $gm, $gd) : $gy . $mod . $gm . $mod . $gd;
