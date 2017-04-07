@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2\jalali;
+namespace tikasoft\jalali;
 
 /* In the name of Allah = بسم اللّه الرّحمن الرّحیم */
 
