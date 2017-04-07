@@ -1,0 +1,21 @@
+{
+    "name": "yii2/yii2-jalali",
+    "description": "Hijri_Shamsi,Solar(Jalali) Date and Time Functions",
+    "type": "library",
+    "keywords": ["yii2","extension","jalali","shamsi","gregorian"],
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Farhad Mirzapour",
+            "email": "farhad.mirzapour@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "yii2\\jalali\\": ""
+        }
+    }
+}
